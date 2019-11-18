@@ -4,8 +4,10 @@ session_start();
 $id = $_POST['id'];
 
 
-$sql = "DELETE FROM message WHERE id = $id";
-$result = mysqli_query($mysqli, $sql);
+$sql = "DELETE FROM message WHERE id = ?";
+$stmt = $mysqli->prepare($sql);
+$stmt->bind_param('i', $id);
+$stmt->execute();
 
 echo 'true';
 

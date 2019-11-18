@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 3.1.33, created on 2019-11-15 06:46:13
+/* Smarty version 3.1.33, created on 2019-11-18 03:58:08
   from 'C:\xampp\htdocs\Project\messageBoard\templates\home.html' */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.33',
-  'unifunc' => 'content_5dce3ba58de1a9_36722826',
+  'unifunc' => 'content_5dd208c039d6b4_48242210',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     '5c496b61e72b1825e76d33018c44b770ad9e1765' => 
     array (
       0 => 'C:\\xampp\\htdocs\\Project\\messageBoard\\templates\\home.html',
-      1 => 1573796563,
+      1 => 1574045863,
       2 => 'file',
     ),
   ),
@@ -20,10 +20,8 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   array (
   ),
 ),false)) {
-function content_5dce3ba58de1a9_36722826 (Smarty_Internal_Template $_smarty_tpl) {
-$_smarty_tpl->compiled->nocache_hash = '18388649425dce3ba58a7a62_29598806';
-?>
-<!DOCTYPE html>
+function content_5dd208c039d6b4_48242210 (Smarty_Internal_Template $_smarty_tpl) {
+?><!DOCTYPE html>
 <html lang="zh-CN">
 
 <head>
@@ -47,6 +45,9 @@ $_smarty_tpl->compiled->nocache_hash = '18388649425dce3ba58a7a62_29598806';
     <link rel="icon" href="../img/icon.ico" type="image/x-icon" />
     <img id="gotop" src="../img/gotop.png" style="position: fixed; bottom:80px; right:20px;">
     <img id="godown" src="../img/godown.png" style="position: fixed; bottom:20px; right:20px;">
+    <?php echo '<script'; ?>
+ src="../js/home.js"><?php echo '</script'; ?>
+>
     <style>
         .message {
             background-color: lightgray;
@@ -64,6 +65,11 @@ $_smarty_tpl->compiled->nocache_hash = '18388649425dce3ba58a7a62_29598806';
 
         textarea {
             resize: none;
+        }
+
+        pre {
+            background-color: lightgray;
+            border: 0;
         }
     </style>
 </head>
@@ -84,17 +90,15 @@ $_smarty_tpl->compiled->nocache_hash = '18388649425dce3ba58a7a62_29598806';
             </div>
             <div id="navbar" class="navbar-collapse collapse">
                 <ul class="nav navbar-nav navbar-right">
-                    <li class="active">
-                        <?php ob_start();
+                    <?php ob_start();
 echo $_smarty_tpl->tpl_vars['name']->value;
 $_prefixVariable1 = ob_get_clean();
 if ($_prefixVariable1 != "Guest") {?>
-                        <a href="logout.php">Sign out</a>
-                        <?php } else { ?>
-                        <a href="../templates/login.html">Sign in</a>
-                        <?php }?>
-                    </li>
+                    <li class="active"> <a href="logout.php">Sign out</a></li>
+                    <?php } else { ?>
+                    <li class="active"><a href="../templates/login.html">Sign in</a></li>
                     <li><a href="../templates/signUp.html">Sign up</a></li>
+                    <?php }?>
                 </ul>
             </div>
         </div>
@@ -110,12 +114,17 @@ if ($_from !== null) {
 foreach ($_from as $_smarty_tpl->tpl_vars['value']->value) {
 ?>
             <div class="message">
-                <h3><?php echo $_smarty_tpl->tpl_vars['value']->value['name'];?>
-</h3>
-                <h5><?php echo $_smarty_tpl->tpl_vars['value']->value['message'];?>
-</h5>
-                <h5 class="day"><?php echo $_smarty_tpl->tpl_vars['value']->value['update_at'];?>
-</h5>
+                <span class="h3"><?php echo $_smarty_tpl->tpl_vars['value']->value['name'];?>
+</span>
+                <span class="day h5 pull-right"><?php echo $_smarty_tpl->tpl_vars['value']->value['update_at'];?>
+</span>
+                <hr>
+                <div>
+                    <pre id="txt<?php echo $_smarty_tpl->tpl_vars['value']->value['id'];?>
+"><?php echo $_smarty_tpl->tpl_vars['value']->value['message'];?>
+</pre>
+                </div>
+                <br>
                 <?php if ($_smarty_tpl->tpl_vars['level']->value == 1) {?>
                 <?php if ($_smarty_tpl->tpl_vars['memberId']->value == $_smarty_tpl->tpl_vars['value']->value['memberId']) {?>
                 <button type="button" class="btn btn-info" id="change<?php echo $_smarty_tpl->tpl_vars['value']->value['id'];?>
@@ -138,6 +147,10 @@ foreach ($_from as $_smarty_tpl->tpl_vars['value']->value) {
 "
                     onclick="change('<?php echo $_smarty_tpl->tpl_vars['value']->value['id'];?>
 ')">修改</button>
+                <button type="button" class="btn btn-danger" id="del<?php echo $_smarty_tpl->tpl_vars['value']->value['id'];?>
+"
+                    onclick="del('<?php echo $_smarty_tpl->tpl_vars['value']->value['id'];?>
+')">刪除</button>
                 <?php }?>
                 <?php }?>
             </div>
@@ -147,43 +160,22 @@ foreach ($_from as $_smarty_tpl->tpl_vars['value']->value) {
 $_smarty_tpl->smarty->ext->_foreach->restore($_smarty_tpl, 1);?>
             <p></p>
         </div>
-        <?php echo '<script'; ?>
->
-            $(document).ready(function () {
-                // console.log('<?php echo count($_smarty_tpl->tpl_vars['res']->value);?>
-');
-
-            })
-            function del(e) {
-                console.log(e);
-                $.ajax({
-                    type: "POST", //傳送方式
-                    url: "delMsg.php", //傳送目的地
-                    data: {
-                        id: e
-                    },
-                    success: function (res) {
-                        location.reload();
-                        // console.log(res);
-                    },
-                    error: function (error) {
-                        console.log(error);
-                    }
-                });
-            }
-            $("#gotop").click(function () {
-                $("html").animate({
-                    scrollTop: 0
-                }, 1000);
-            });
-            $("#godown").click(function () {
-                last = $("body").height() - $(window).height() //滾到最底
-                $("html").animate({
-                    scrollTop: last
-                }, 1000);
-            });
-        <?php echo '</script'; ?>
->
+        <?php ob_start();
+echo $_smarty_tpl->tpl_vars['name']->value;
+$_prefixVariable2 = ob_get_clean();
+if ($_prefixVariable2 != "Guest") {?>
+        <div class="jumbotron p-3 p-md-5 ">
+            <div>
+                <h1 class="display-4 font-italic">input your message here</h1>
+                <div class="form-group">
+                    <textarea class="form-control" style="width:100%" rows="7" id="Msg"></textarea>
+                </div>
+            </div>
+            <button class="btn btn-lg  btn-default btn-block" type="button" id="addMsg"
+                style="background-color: white;width:50%;margin:auto;">送出</button>
+        </div>
+        <?php }?>
+    </div>
 </body>
 
 </html><?php }

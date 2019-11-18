@@ -2,13 +2,12 @@
 require_once("sql.php");
 session_start();
 $id = $_POST['id'];
-$message = nl2br($_POST['Msg']);
-echo $id;
-echo $message;
+$message = $_POST['Msg'];
+$newMsg = str_replace("<", "&lt;", $message);
 
 $sql = "UPDATE message SET message = ? WHERE id = ?";
 $stmt = $mysqli->prepare($sql);
-$stmt->bind_param('si', $message, $id);
+$stmt->bind_param('si', $newMsg, $id);
 $stmt->execute();
 
 // echo 'true';

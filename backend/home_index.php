@@ -10,8 +10,8 @@ require 'sql.php';
 $smarty = new Smarty;
 //$smarty->force_compile = true;
 $smarty->debugging = true;
-$smarty->caching = true;
-$smarty->cache_lifetime = 120;
+// $smarty->caching = true;
+// $smarty->cache_lifetime = 120;
 
 
 //使用者資訊(確認是否登入)

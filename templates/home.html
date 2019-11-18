@@ -14,6 +14,9 @@
     <!-- Bootstrap core CSS -->
     <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
     <link rel="icon" href="../img/icon.ico" type="image/x-icon" />
+    <img id="gotop" src="../img/gotop.png" style="position: fixed; bottom:80px; right:20px;">
+    <img id="godown" src="../img/godown.png" style="position: fixed; bottom:20px; right:20px;">
+    <script src="../js/home.js"></script>
     <style>
         .message {
             background-color: lightgray;
@@ -31,6 +34,11 @@
 
         textarea {
             resize: none;
+        }
+
+        pre {
+            background-color: lightgray;
+            border: 0;
         }
     </style>
 </head>
@@ -50,9 +58,12 @@
             </div>
             <div id="navbar" class="navbar-collapse collapse">
                 <ul class="nav navbar-nav navbar-right">
-                    <li class="active" id="test">
-                    </li>
-                    <li><a href="signUp.php">Sign up</a></li>
+                    {if {$name} != "Guest"}
+                    <li class="active"> <a href="logout.php">Sign out</a></li>
+                    {else}
+                    <li class="active"><a href="../templates/login.html">Sign in</a></li>
+                    <li><a href="../templates/signUp.html">Sign up</a></li>
+                    {/if}
                 </ul>
             </div>
         </div>
@@ -64,40 +75,48 @@
         <div class="jumbotron" id="msg">
             {foreach $res as $value}
             <div class="message">
-                <h3>{$value.name}</h3>
-                <h5>{$value.message}</h5>
-                <h5 class="day">{$value.update_at}</h5>
-                {if $level == 1 && $memberId==$value.id}
-                {<button type="button" class="btn btn-info" id="change${res[i].id}"
-                    onclick="change($value.id)">修改</button>
-                <button type="button" class="btn btn-danger" id="del${$value.id}"
-                    onclick="del(${$value.id})">刪除</button>}
-                {elseif $level == 0}
-                {}
+                <span class="h3">{$value.name}</span>
+                <span class="day h5 pull-right">{$value.update_at}</span>
+                <hr>
+                <div>
+                    <pre id="txt{$value.id}">{$value.message}</pre>
+                </div>
+                <br>
+                {if $level == 1}
+                {if $memberId==$value.memberId}
+                <button type="button" class="btn btn-info" id="change{$value.id}"
+                    onclick="change('{$value.id}')">修改</button>
+                <button type="button" class="btn btn-danger" id="del{$value.id}"
+                    onclick="del('{$value.id}')">刪除</button>
                 {else}
-                {}
+                <button type="button" class="btn btn-danger" id="del{$value.id}"
+                    onclick="del('{$value.id}')">刪除</button>
+                {/if}
+                {elseif $level == 0}
+                {if $memberId==$value.memberId}
+                <button type="button" class="btn btn-info" id="change{$value.id}"
+                    onclick="change('{$value.id}')">修改</button>
+                <button type="button" class="btn btn-danger" id="del{$value.id}"
+                    onclick="del('{$value.id}')">刪除</button>
+                {/if}
                 {/if}
             </div>
             {/foreach}
             <p></p>
         </div>
-        <script>
-            $(document).ready(function () {
-                console.log('{$res|count}');
-                if ('{ $name }' != 'Guest') {
-                    $("#test").append(`<a href="#">Sign out</a>`);
-                    if ('{$level}' == 1) {
-
-                    } else if ('{$level}' == 0) {
-
-                    } else {
-
-                    }
-                } else {
-                    $("#test").append(`<a href="#">Sign in</a>`);
-                }
-            })
-        </script>
+        {if {$name} != "Guest"}
+        <div class="jumbotron p-3 p-md-5 ">
+            <div>
+                <h1 class="display-4 font-italic">input your message here</h1>
+                <div class="form-group">
+                    <textarea class="form-control" style="width:100%" rows="7" id="Msg"></textarea>
+                </div>
+            </div>
+            <button class="btn btn-lg  btn-default btn-block" type="button" id="addMsg"
+                style="background-color: white;width:50%;margin:auto;">送出</button>
+        </div>
+        {/if}
+    </div>
 </body>
 
 </html>
