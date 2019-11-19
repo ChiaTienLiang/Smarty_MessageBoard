@@ -14,35 +14,11 @@
     <!-- Bootstrap core CSS -->
     <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
     <link rel="icon" href="../img/icon.ico" type="image/x-icon" />
-    <img id="gotop" src="../img/gotop.png" style="position: fixed; bottom:80px; right:20px;">
-    <img id="godown" src="../img/godown.png" style="position: fixed; bottom:20px; right:20px;">
+    <!-- <img id="gotop" src="../img/gotop.png" style="position: fixed; bottom:80px; right:20px;"> -->
+    <!-- <img id="godown" src="../img/godown.png" style="position: fixed; bottom:20px; right:20px;"> -->
+    <link rel="stylesheet" type="text/css" href="../css/home.css">
     <script src="../js/home.js"></script>
-    <style>
-        .message {
-            background-color: lightgray;
-            padding: 30px;
-            margin: 30px;
-        }
-
-        h1 {
-            text-align: center;
-        }
-
-        .day {
-            text-align: right;
-        }
-
-        textarea {
-            resize: none;
-        }
-
-        pre {
-            background-color: lightgray;
-            border: 0;
-        }
-    </style>
 </head>
-
 <body>
     <nav class="navbar navbar-default navbar-static-top">
         <div class="container">
@@ -59,7 +35,7 @@
             <div id="navbar" class="navbar-collapse collapse">
                 <ul class="nav navbar-nav navbar-right">
                     {if {$name} != "Guest"}
-                    <li class="active"> <a href="logout.php">Sign out</a></li>
+                    <li class="active"> <a href="#" id="logout">Sign out</a></li>
                     {else}
                     <li class="active"><a href="../templates/login.html">Sign in</a></li>
                     <li><a href="../templates/signUp.html">Sign up</a></li>
@@ -70,17 +46,22 @@
     </nav>
     <div class="container">
         <div class="jumbotron">
-            <h1>CY Message Board</h1>
+            <h1>CY&ensp;Message&ensp;Board</h1>
         </div>
-        <div class="jumbotron" id="msg">
+        <div class="jumbotron" id="allmsg">
             {foreach $res as $value}
             <div class="message">
                 <span class="h3">{$value.name}</span>
-                <span class="day h5 pull-right">{$value.update_at}</span>
+                <span class="day h5 pull-right">{$value.create_at}</span>
                 <hr>
                 <div>
                     <pre id="txt{$value.id}">{$value.message}</pre>
                 </div>
+                {if $value.create_at != $value.update_at}
+                <div id="fix{$value.id}">
+                    <span class="day h5 pull-right">修改於{$value.update_at}</span>
+                </div>
+                {/if}
                 <br>
                 {if $level == 1}
                 {if $memberId==$value.memberId}
@@ -118,5 +99,4 @@
         {/if}
     </div>
 </body>
-
 </html>

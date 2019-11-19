@@ -5,8 +5,8 @@ session_start();
  *
  * @package Example-application
  */
-require '../libs/Smarty.class.php';
-require 'sql.php';
+require_once '../libs/Smarty.class.php';
+require_once 'sql.php';
 $smarty = new Smarty;
 //$smarty->force_compile = true;
 $smarty->debugging = true;
@@ -28,7 +28,7 @@ $smarty->assign("memberId", $memberId);
 
 
 //撈留言板資料
-$sql = "SELECT member.name,message.id,message.message,message.update_at,message.memberId FROM message,member WHERE member.id=message.memberId ORDER BY update_at  DESC";
+$sql = "SELECT member.name,message.id,message.message,message.create_at,message.update_at,message.memberId FROM message,member WHERE member.id=message.memberId ORDER BY message.create_at  DESC";
 $result = mysqli_query($mysqli, $sql);
 $num = mysqli_num_rows($result); //取得數量
 for ($i = 0; $i < $num; $i++) {

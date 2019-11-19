@@ -1,7 +1,6 @@
 
 $(document).ready(function () {
     $("#btnOK").click(function () {
-        console.log('test');
         var emailR = /^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[a-zA-Z]+(\.[a-zA-Z]+)?$/;
         var passwordR = /^[a-zA-Z0-9]{8,12}$/;
         if (
@@ -10,9 +9,10 @@ $(document).ready(function () {
             passwordR.test($("#password").val())
         ) {
             $.ajax({
-                type: "POST", //傳送方式
-                url: "../backend/signUpCheck.php", //傳送目的地
+                type: "POST", 
+                url: "../MemberRouter.php",
                 data: {
+                    todo: 'signUp',
                     name: $("#name").val(),
                     email: $("#email").val(),
                     password: $("#password").val()

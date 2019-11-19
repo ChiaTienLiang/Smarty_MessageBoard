@@ -1,5 +1,5 @@
 <?php
 session_start();
 session_destroy();
-header('location:home_index.php');
+header('location:../MsgClass.php');
 ?>

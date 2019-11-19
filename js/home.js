@@ -4,10 +4,11 @@ $(document).ready(function () {
             $("#Msg").val() != ""
         ) {
             $.ajax({
-                type: "POST", //傳送方式
-                url: "../backend/addMsg.php", //傳送目的地
+                type: "POST", 
+                url: "../MsgRouter.php", 
                 data: {
-                    Msg: $("#Msg").val()
+                    Msg: $("#Msg").val(),
+                    todo: 'addMsg',
                 },
                 success: function (res) {
                     if (res === 'true') {
@@ -34,26 +35,40 @@ $(document).ready(function () {
             })
         }
     });
-    $("#gotop").click(function () {
-        $("html").animate({
-            scrollTop: 0
-        }, 1000);
-    });
-    $("#godown").click(function () {
-        last = $("body").height() - $(window).height() //滾到最底
-        $("html").animate({
-            scrollTop: last
-        }, 1000);
+
+    /*
+    ** 登出
+    */
+    $("#logout").click(function () {
+        $.ajax({
+            type: "POST", //傳送方式
+            url: "../MemberRouter.php", //傳送目的地
+            data: {
+                todo: 'logout',
+            },
+            success: function (res) {
+                if (res === 'true')
+                    console.log(res);
+                window.location.href = "../backend/home_index.php"
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        });
     });
 })
-//刪除
+
+/*
+** 刪除留言
+*/
 function del(e) {
-    console.log(e);
+    // console.log(e);
     $.ajax({
         type: "POST", //傳送方式
-        url: "../backend/delMsg.php", //傳送目的地
+        url: "../MsgRouter.php", //傳送目的地
         data: {
-            id: e
+            id: e,
+            todo: 'delMsg',
         },
         success: function (res) {
             location.reload();
@@ -63,25 +78,29 @@ function del(e) {
         }
     });
 }
-//修改
+
+/*
+** 修改留言
+*/
 function change(e) {
     temp = $("#txt" + e).html();
-    // var brExp = /<br\s*\/?>/;
-    // newTemp = temp.split(brExp);
-    // newTemp2 = newTemp.join("");
-    // console.log(temp);
+    $("#fix" + e).hide();
     $("#txt" + e).html("");
     $("#txt" + e).append('<textarea class="form-control" style="width:100%" rows="7" id="txtMsg">' + temp + '</textarea><br>');
     $("#change" + e).hide();
     $("#del" + e).hide();
     $("#txt" + e).append('<button type="button" class="btn btn-danger pull-right" onclick="cancel(' + e + ')">取消</button><button type="button" class="btn btn-success pull-right" onclick="changeOk(' + e + ')">確認</button>');
 }
-//修改完成送出
+
+/*
+** 確認修改
+*/
 function changeOk(e) {
     $.ajax({
         type: "POST", //傳送方式
-        url: "../backend/changMsg.php", //傳送目的地
+        url: "../MsgRouter.php", //傳送目的地
         data: {
+            todo: 'changMsg',
             id: e,
             Msg: $("#txtMsg").val()
         },
@@ -93,10 +112,26 @@ function changeOk(e) {
         }
     });
 }
-//取消修改
+
+/*
+** 取消修改
+*/
 function cancel(e) {
     $("#txt" + e).html("");
     $("#txt" + e).append(temp);
     $("#change" + e).show();
     $("#del" + e).show();
+    $("#fix" + e).show();
 }
+
+// $("#gotop").click(function () {
+    //     $("html").animate({
+    //         scrollTop: 0
+    //     }, 1000);
+    // });
+    // $("#godown").click(function () {
+    //     last = $("body").height() - $(window).height() //滾到最底
+    //     $("html").animate({
+    //         scrollTop: last
+    //     }, 1000);
+    // });

@@ -1,0 +1,37 @@
+
+.message {
+    background-color: lightgray;
+    padding: 30px;
+    margin: 30px;
+}
+
+.message .h3{
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight:bolder ;
+}
+
+#allmsg {
+    overflow: auto;
+    height: 20cm;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+h1 {
+    text-align: center;
+    font-family:cursive;
+    font-weight:bolder ;
+}
+
+.day {
+    text-align: right;
+}
+
+textarea {
+    resize: none;
+}
+
+pre {
+    background-color: lightgray;
+    border: 0;
+}
+
