@@ -1,6 +1,7 @@
 $(document).ready(function () {
   var emailR = /^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[a-zA-Z]+(\.[a-zA-Z]+)?$/;
   var passwordR = /^[a-zA-Z0-9]{8,12}$/;
+
   $("#login").click(function () {
     if (
       emailR.test($("#email").val()) &&
@@ -15,14 +16,8 @@ $(document).ready(function () {
           password: $("#password").val()
         },
         success: function (res) {
-          // console.log(res);
-          if (res === 'false') {
-            Swal.fire({
-              position: 'top',
-              icon: 'error',
-              title: '帳號密碼錯誤!',
-            })
-          } else if (res === 'true') {
+          res = JSON.parse(res);
+          if (res === true) {
             Swal.fire({
               position: 'top',
               icon: 'success',
@@ -32,6 +27,12 @@ $(document).ready(function () {
             }).then(function () {
               window.location.href = "../backend/home_index.php"
             });
+          } else {
+            Swal.fire({
+              position: 'top',
+              icon: 'error',
+              title: '帳號密碼錯誤!',
+            })
           }
         },
         error: function (error) {

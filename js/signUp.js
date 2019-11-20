@@ -1,4 +1,3 @@
-
 $(document).ready(function () {
     $("#btnOK").click(function () {
         var emailR = /^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[a-zA-Z]+(\.[a-zA-Z]+)?$/;
@@ -9,7 +8,7 @@ $(document).ready(function () {
             passwordR.test($("#password").val())
         ) {
             $.ajax({
-                type: "POST", 
+                type: "POST",
                 url: "../MemberRouter.php",
                 data: {
                     todo: 'signUp',
@@ -18,14 +17,8 @@ $(document).ready(function () {
                     password: $("#password").val()
                 },
                 success: function (res) {
-                    // console.log(res);
-                    if (res === 'false') {
-                        Swal.fire({
-                            position: 'top',
-                            icon: 'error',
-                            title: '該Email已被註冊',
-                        })
-                    } else if (res === 'true') {
+                    res = JSON.parse(res);
+                    if (res === true) {
                         Swal.fire({
                             position: 'top',
                             icon: 'success',
@@ -36,6 +29,12 @@ $(document).ready(function () {
                             .then(function () {
                                 window.location.href = "../templates/login.html"
                             });
+                    } else {
+                        Swal.fire({
+                            position: 'top',
+                            icon: 'error',
+                            title: '該Email已被註冊',
+                        })
                     }
                 },
                 error: function (error) {
@@ -51,4 +50,3 @@ $(document).ready(function () {
         }
     });
 })
-

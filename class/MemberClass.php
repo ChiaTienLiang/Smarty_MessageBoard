@@ -1,4 +1,8 @@
 <?php
+
+/**
+ * 會員相關
+ */
 class Member
 {
     private $mysqli;
@@ -9,72 +13,69 @@ class Member
         $this->mysqli = $mysqli;
     }
 
-    /*
-    ** 註冊
-    */
-    function signUp()
+    /**
+     * 註冊
+     */
+    function signUp($name, $email, $password)
     {
-        $name = $_POST['name'];
-        $email = $_POST['email'];
-        $password = $_POST['password'];
-        $password = password_hash($password, PASSWORD_DEFAULT);
         $sql = "SELECT * FROM member Where email = ?"; //確認email是否已被註冊
         $stmt = $this->mysqli->prepare($sql);
         $stmt->bind_param('s', $email);
         $stmt->execute();
         $result = $stmt->get_result();
-        if ($result->num_rows != 0) {
-            mysqli_free_result($result);
-            echo 'false';
-        } else {
+        if ($result->num_rows === 0) {
             $sql = "INSERT INTO member(name,email,password)VALUES(?,?,?)";
             $stmt = $this->mysqli->prepare($sql);
             $stmt->bind_param('sss', $name, $email, $password);
-            $stmt->execute();
-            echo 'true';
+            $return = $stmt->execute();
+            mysqli_close($this->mysqli);
+            return $return;
+        } else {
+            mysqli_free_result($result);
+            mysqli_close($this->mysqli);
+            return false;
         }
-        mysqli_close($this->mysqli);
     }
 
-    /*
-    ** 登入
-    */
-    function login()
+    /**
+     * 登入
+     */
+    function login($email, $password)
     {
-        $email = $_POST['email'];
-        $password = $_POST['password'];
         $sql = "SELECT * FROM member Where email = ?"; //確認是否有該email
         $stmt = $this->mysqli->prepare($sql);
         $stmt->bind_param('s', $email);
         $stmt->execute();
         $result = $stmt->get_result();
-        if ($result->num_rows != 0) {
+        if ($result->num_rows === 0) {  //email不存在
+            mysqli_free_result($result);
+            mysqli_close($this->mysqli);
+            return false;
+        } else {
             $memberData = $result->fetch_object();
             $pwd = $memberData->password;
-            $test = password_verify($password, $pwd);
-            if ($test != 1) {
-                mysqli_free_result($result);
-                echo 'false';
-            } else {
+            $test = password_verify($password, $pwd); //hash比對
+            if ($test === true) {
                 $_SESSION['name'] = $memberData->name;
                 $_SESSION['level'] = $memberData->level;
-                $_SESSION['id'] = $memberData->id;
-                echo 'true';
+                $_SESSION['memberId'] = $memberData->id;
+                mysqli_close($this->mysqli);
+                mysqli_free_result($result);
+                return true;
+            } else {
+                mysqli_free_result($result);
+                mysqli_close($this->mysqli);
+                return false;
             }
-        } else {
-            mysqli_free_result($result);
-            echo 'false';
         }
-        mysqli_close($this->mysqli);
     }
 
-    /*
-    ** 登出
-    */
+    /**
+     * 登出
+     */
     function logout()
     {
         session_destroy();
-        echo 'true';
+        return true;
     }
 }
-?>
