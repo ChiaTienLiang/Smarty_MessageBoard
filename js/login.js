@@ -9,7 +9,7 @@ $(document).ready(function () {
     ) {
       $.ajax({
         type: "POST", //傳送方式
-        url: "../MemberRouter.php", //傳送目的地
+        url: "../MemberContro.php", //傳送目的地
         data: {
           todo: 'login',
           email: $("#email").val(),
@@ -17,7 +17,7 @@ $(document).ready(function () {
         },
         success: function (res) {
           res = JSON.parse(res);
-          if (res === true) {
+          if (res['success'] === true) {
             Swal.fire({
               position: 'top',
               icon: 'success',
@@ -25,7 +25,9 @@ $(document).ready(function () {
               showConfirmButton: false,
               timer: 1500
             }).then(function () {
+              sessionStorage.setItem("key", res['token']);
               window.location.href = "../backend/home_index.php"
+              // document.cookie = "token=" + res['token'];
             });
           } else {
             Swal.fire({

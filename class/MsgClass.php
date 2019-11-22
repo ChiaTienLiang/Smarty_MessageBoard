@@ -1,25 +1,27 @@
 <?php
-
+require_once 'tokenClass.php';
 /**
  * 留言相關
  */
-class Msg
+class Msg  extends Token
 {
-    private $mysqli;
+    // private $mysqli;
 
-    function __construct($mysqli)
-    {
-        session_start();
-        $this->mysqli = $mysqli;
-    }
+    // function __construct($mysqli)
+    // {
+    //     session_start();
+    //     $this->mysqli = $mysqli;
+    // }
 
     /**
      * 取得留言資料
      */
-    function getMsg()
+    public function getMsg($page)
     {
-        $sql = "SELECT member.name,message.id,message.message,message.update_at,message.memberId
-            FROM message,member WHERE member.id=message.memberId ORDER BY update_at  DESC";
+        $max = 5;
+        $page = ($page - 1) * $max;
+        $sql = "SELECT member.name,message.id,message.message,message.create_at,message.update_at,message.memberId
+            FROM message,member WHERE member.id=message.memberId ORDER BY create_at  DESC limit $page,$max ";
         $result = mysqli_query($this->mysqli, $sql);
         $num = mysqli_num_rows($result); //取得數量
         for ($i = 0; $i < $num; $i++) {
@@ -31,14 +33,27 @@ class Msg
     }
 
     /**
+     * 取得留言總數
+     */
+    public function countMsg()
+    {
+        $sql = "SELECT * FROM message";
+        $result = mysqli_query($this->mysqli, $sql);
+        // $count = mysqli_fetch_assoc($result);
+        $count = mysqli_num_rows($result);
+        return $count;
+    }
+
+    /**
      * 新增留言
      */
-    function addMsg($message, $memberId)
+    public function addMsg($Msg, $token)
     {
-        $newMsg = str_replace("<", "&lt;", $message);
+        Token::checkToken($token);
+        $newMsg = str_replace("<", "&lt;", $Msg);
         $sql = "INSERT INTO message(memberId,message)VALUES(?,?)";
         $stmt = $this->mysqli->prepare($sql);
-        $stmt->bind_param('is', $memberId, $newMsg);
+        $stmt->bind_param('is', $this->memberId, $newMsg);
         $return = $stmt->execute();
         mysqli_close($this->mysqli);
         return $return;
@@ -47,12 +62,13 @@ class Msg
     /**
      * 修改留言
      */
-    function changMsg($message, $id)
+    public function changMsg($Msg, $id, $token)
     {
-        $newMsg = str_replace("<", "&lt;", $message);
-        $sql = "UPDATE message SET message = ? WHERE id = ?";
+        Token::checkToken($token);
+        $newMsg = str_replace("<", "&lt;", $Msg);
+        $sql = "UPDATE message SET message = ? WHERE id = ? AND memberId = ?";
         $stmt = $this->mysqli->prepare($sql);
-        $stmt->bind_param('si', $newMsg, $id);
+        $stmt->bind_param('sii', $newMsg, $id, $this->memberId);
         $return = $stmt->execute();
         mysqli_close($this->mysqli);
         return $return;
@@ -61,13 +77,23 @@ class Msg
     /**
      * 刪除留言
      */
-    function delMsg($id, $memberId)
+    public function delMsg($id, $token)
     {
-        $sql = "DELETE FROM message WHERE id = ? AND memberId = ?";
-        $stmt = $this->mysqli->prepare($sql);
-        $stmt->bind_param('ii', $id, $memberId);
-        $return = $stmt->execute();
-        mysqli_close($this->mysqli);
-        return $return;
+        Token::checkToken($token);
+        if ($this->level === 1) {
+            $sql = "DELETE FROM message WHERE id = ?";
+            $stmt = $this->mysqli->prepare($sql);
+            $stmt->bind_param('i', $id);
+            $return = $stmt->execute();
+            mysqli_close($this->mysqli);
+            return $return;
+        } else {
+            $sql = "DELETE FROM message WHERE id = ? AND memberId = ?";
+            $stmt = $this->mysqli->prepare($sql);
+            $stmt->bind_param('ii', $id, $this->memberId);
+            $return = $stmt->execute();
+            mysqli_close($this->mysqli);
+            return $return;
+        }
     }
 }

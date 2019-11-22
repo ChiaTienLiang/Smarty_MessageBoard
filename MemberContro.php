@@ -17,7 +17,7 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
 switch ($_POST['todo']) {
     case 'login':
         $return = $member->login($email, $password);
-        echo json_encode($return);
+        echo $return;
         break;
     case 'logout':
         $return = $member->logout();

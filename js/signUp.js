@@ -9,7 +9,7 @@ $(document).ready(function () {
         ) {
             $.ajax({
                 type: "POST",
-                url: "../MemberRouter.php",
+                url: "../MemberContro.php",
                 data: {
                     todo: 'signUp',
                     name: $("#name").val(),

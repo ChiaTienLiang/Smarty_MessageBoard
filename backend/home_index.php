@@ -1,5 +1,5 @@
 <?php
-session_start();
+
 /**
  * Example Application
  *
@@ -7,7 +7,12 @@ session_start();
  */
 require_once '../libs/Smarty.class.php';
 require_once 'sql.php';
+require_once '../class/MsgClass.php';
+
 $smarty = new Smarty;
+// $token = new Token($mysqli);
+$Msg = new Msg($mysqli);
+// $e = $token->smartyUse();
 //$smarty->force_compile = true;
 $smarty->debugging = true;
 // $smarty->caching = true;
@@ -15,7 +20,17 @@ $smarty->debugging = true;
 
 /*
  **使用者資訊(確認是否登入)
- */
+//  */
+// if (!$_GET['key']) {
+//     $name = 'Guest';
+//     $memberId = NULL;
+//     $level = NULL;
+// } else {
+//     $search = $Msg->checkToken($_POST['key']);
+//     $name = $search->name;
+//     $memberId = $search->id;
+//     $level = $search->level;
+// }
 
 if (isset($_SESSION['level'])) $level = $_SESSION['level'];
 else $level = NULL;
@@ -24,19 +39,32 @@ else $name = 'Guest';
 if (isset($_SESSION['memberId'])) $memberId = $_SESSION['memberId'];
 else $memberId = NULL;
 
+
 $smarty->assign("name", $name);
 $smarty->assign("level", $level);
 $smarty->assign("memberId", $memberId);
 
-/*
- **撈留言板資料
- */
-$sql = "SELECT member.name,message.id,message.message,message.create_at,message.update_at,message.memberId FROM message,member WHERE member.id=message.memberId ORDER BY message.create_at  DESC";
-$result = mysqli_query($mysqli, $sql);
-$num = mysqli_num_rows($result); //取得數量
-for ($i = 0; $i < $num; $i++) {
-    $search[$i] = mysqli_fetch_assoc($result);
+$count = $Msg->countMsg();
+$count = ceil($count / 5);
+$smarty->assign("page", $count);
+
+$test = $_SERVER['REQUEST_URI'];
+$test = explode("page=", $test);
+if (sizeof($test) === 2) {
+    $test = $test[1];
+    $page = (int) $test;
+    if ($page > $count || $page <= 0) {
+        $page = $count;
+    } else $page = $page;
+} else {
+    $page = 1;
 }
+
+// $page = implode($test);
+$smarty->assign("pagecss", $page);
+
+$search = $Msg->getMsg($page);
 $smarty->assign("res", $search);
+
 
 $smarty->display('../templates/home.html');

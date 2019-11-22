@@ -1,13 +1,15 @@
 $(document).ready(function () {
+
     $("#addMsg").click(function () {
         if (
             $("#Msg").val() != ""
         ) {
             $.ajax({
                 type: "POST",
-                url: "../MsgRouter.php",
+                url: "../MsgContro.php",
                 data: {
                     Msg: $("#Msg").val(),
+                    key: sessionStorage.getItem("key"),
                     todo: 'addMsg',
                 },
                 success: function (res) {
@@ -20,7 +22,8 @@ $(document).ready(function () {
                             showConfirmButton: false,
                             timer: 1500
                         }).then(function () {
-                            window.location.href = "../backend/home_index.php"
+                            // window.location.href = "../backend/home_index.php"
+                            location.reload();
                         });
                     } else {
                         Swal.fire({
@@ -49,13 +52,14 @@ $(document).ready(function () {
     $("#logout").click(function () {
         $.ajax({
             type: "POST", //傳送方式
-            url: "../MemberRouter.php", //傳送目的地
+            url: "../MemberContro.php", //傳送目的地
             data: {
                 todo: 'logout',
             },
             success: function (res) {
                 res = JSON.parse(res);
                 if (res === true) {
+
                     let timerInterval
                     Swal.fire({
                         title: '頁面將於3秒後進行跳轉',
@@ -73,6 +77,7 @@ $(document).ready(function () {
                         },
                         onClose: () => {
                             clearInterval(timerInterval)
+                            sessionStorage.removeItem('key');
                             window.location.href = "../backend/home_index.php"
                         }
                     }).then((result) => {
@@ -80,6 +85,7 @@ $(document).ready(function () {
                             /* Read more about handling dismissals below */
                             result.dismiss === Swal.DismissReason.timer
                         ) {
+                            sessionStorage.removeItem('key');
                             window.location.href = "../backend/home_index.php"
                         }
                     })
@@ -115,10 +121,11 @@ function del(e) {
         if (result.value == true) { //sweetalert2 彈窗選確定
             $.ajax({
                 type: "POST", //傳送方式
-                url: "../MsgRouter.php", //傳送目的地
+                url: "../MsgContro.php", //傳送目的地
                 data: {
                     id: e,
                     todo: 'delMsg',
+                    key: sessionStorage.getItem("key"),
                 },
                 success: function (res) {
                     res = JSON.parse(res);
@@ -130,7 +137,8 @@ function del(e) {
                             showConfirmButton: false,
                             timer: 1500
                         }).then(function () {
-                            window.location.href = "../backend/home_index.php"
+                            // window.location.href = "../backend/home_index.php"
+                            location.reload();
                         });
                     } else {
                         Swal.fire({
@@ -165,13 +173,15 @@ function change(e) {
 * 確認修改
 */
 function changeOk(e) {
+    test = $("#txtMsg").val();
     $.ajax({
         type: "POST", //傳送方式
-        url: "../MsgRouter.php", //傳送目的地
+        url: "../MsgContro.php", //傳送目的地
         data: {
             todo: 'changMsg',
             id: e,
-            Msg: $("#txtMsg").val()
+            key: sessionStorage.getItem("key"),
+            Msg: $("#txtMsg").val(),
         },
         success: function (res) {
             res = JSON.parse(res);
@@ -183,7 +193,19 @@ function changeOk(e) {
                     showConfirmButton: false,
                     timer: 1500
                 }).then(function () {
-                    window.location.href = "../backend/home_index.php"
+                    $("#txt" + e).html("");
+                    $("#txt" + e).append(temp);
+                    $("#change" + e).show();
+                    $("#del" + e).show();
+                    $("#fix" + e).show();
+                    console.log(test);
+                    $("#txt" + e).text(test);
+                    // $("#txt" + e).val(test);
+                    // $("#change" + e).show();
+                    // $("#del" + e).show();
+                    // $("#fix" + e).show();
+                    // window.location.href = "../backend/home_index.php"
+                    // location.reload();
                 });
             } else {
                 Swal.fire({
@@ -209,6 +231,7 @@ function cancel(e) {
     $("#del" + e).show();
     $("#fix" + e).show();
 }
+
 
 // $("#gotop").click(function () {
     //     $("html").animate({
