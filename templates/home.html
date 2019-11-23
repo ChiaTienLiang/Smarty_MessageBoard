@@ -56,11 +56,12 @@
                 <div>
                     <pre id="txt{$value.id}">{{$value.message}}</pre>
                 </div>
-                {if $value.create_at != $value.update_at}
+                <!-- {if $value.create_at != $value.update_at} -->
                 <div id="fix{{$value.id}}">
-                    <span class="day h5 pull-right">修改於{{$value.update_at}}</span>
+                        <span class="day h5 pull-right"></span>
+                    <!-- <span class="day h5 pull-right">修改於{{$value.update_at}}</span> -->
                 </div>
-                {/if}
+                <!-- {/if} -->
                 <br>
                 {if $level == 1}
                 {if $memberId==$value.memberId}

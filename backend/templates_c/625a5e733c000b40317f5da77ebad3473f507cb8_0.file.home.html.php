@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 3.1.33, created on 2019-11-19 09:32:58
+/* Smarty version 3.1.33, created on 2019-11-23 17:06:03
   from 'C:\xampp\htdocs\Project\Smarty_MessageBoard\templates\home.html' */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.33',
-  'unifunc' => 'content_5dd3a8ba8cdef9_04088960',
+  'unifunc' => 'content_5dd958eb5035d7_51745385',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     '625a5e733c000b40317f5da77ebad3473f507cb8' => 
     array (
       0 => 'C:\\xampp\\htdocs\\Project\\Smarty_MessageBoard\\templates\\home.html',
-      1 => 1574152376,
+      1 => 1574525160,
       2 => 'file',
     ),
   ),
@@ -20,7 +20,7 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   array (
   ),
 ),false)) {
-function content_5dd3a8ba8cdef9_04088960 (Smarty_Internal_Template $_smarty_tpl) {
+function content_5dd958eb5035d7_51745385 (Smarty_Internal_Template $_smarty_tpl) {
 ?><!DOCTYPE html>
 <html lang="zh-CN">
 
@@ -114,19 +114,20 @@ $_prefixVariable6 = ob_get_clean();
 echo $_prefixVariable6;?>
 </pre>
                 </div>
-                <?php if ($_smarty_tpl->tpl_vars['value']->value['create_at'] != $_smarty_tpl->tpl_vars['value']->value['update_at']) {?>
+                <!-- <?php if ($_smarty_tpl->tpl_vars['value']->value['create_at'] != $_smarty_tpl->tpl_vars['value']->value['update_at']) {?> -->
                 <div id="fix<?php ob_start();
 echo $_smarty_tpl->tpl_vars['value']->value['id'];
 $_prefixVariable7 = ob_get_clean();
 echo $_prefixVariable7;?>
 ">
-                    <span class="day h5 pull-right">修改於<?php ob_start();
+                        <span class="day h5 pull-right"></span>
+                    <!-- <span class="day h5 pull-right">修改於<?php ob_start();
 echo $_smarty_tpl->tpl_vars['value']->value['update_at'];
 $_prefixVariable8 = ob_get_clean();
 echo $_prefixVariable8;?>
-</span>
+</span> -->
                 </div>
-                <?php }?>
+                <!-- <?php }?> -->
                 <br>
                 <?php if ($_smarty_tpl->tpl_vars['level']->value == 1) {?>
                 <?php if ($_smarty_tpl->tpl_vars['memberId']->value == $_smarty_tpl->tpl_vars['value']->value['memberId']) {?>
@@ -193,13 +194,42 @@ echo $_prefixVariable18;?>
 $_smarty_tpl->smarty->ext->_foreach->restore($_smarty_tpl, 1);?>
             <p></p>
         </div>
+        <div>
+            <ul class="pagination">
+                <!-- <li><a href="#">&laquo;</a></li> -->
+                <?php
+$_smarty_tpl->tpl_vars['foo'] = new Smarty_Variable(null, $_smarty_tpl->isRenderingCache);$_smarty_tpl->tpl_vars['foo']->step = 1;$_smarty_tpl->tpl_vars['foo']->total = (int) ceil(($_smarty_tpl->tpl_vars['foo']->step > 0 ? $_smarty_tpl->tpl_vars['page']->value+1 - (1) : 1-($_smarty_tpl->tpl_vars['page']->value)+1)/abs($_smarty_tpl->tpl_vars['foo']->step));
+if ($_smarty_tpl->tpl_vars['foo']->total > 0) {
+for ($_smarty_tpl->tpl_vars['foo']->value = 1, $_smarty_tpl->tpl_vars['foo']->iteration = 1;$_smarty_tpl->tpl_vars['foo']->iteration <= $_smarty_tpl->tpl_vars['foo']->total;$_smarty_tpl->tpl_vars['foo']->value += $_smarty_tpl->tpl_vars['foo']->step, $_smarty_tpl->tpl_vars['foo']->iteration++) {
+$_smarty_tpl->tpl_vars['foo']->first = $_smarty_tpl->tpl_vars['foo']->iteration === 1;$_smarty_tpl->tpl_vars['foo']->last = $_smarty_tpl->tpl_vars['foo']->iteration === $_smarty_tpl->tpl_vars['foo']->total;?>
+                <?php if ($_smarty_tpl->tpl_vars['pagecss']->value == $_smarty_tpl->tpl_vars['foo']->value) {?>
+                <li><a class="active" href="?page=<?php echo $_smarty_tpl->tpl_vars['foo']->value;?>
+"><?php ob_start();
+echo $_smarty_tpl->tpl_vars['foo']->value;
+$_prefixVariable19 = ob_get_clean();
+echo $_prefixVariable19;?>
+</a></li>
+                <?php } else { ?>
+                <li><a class="disabled" href="?page=<?php echo $_smarty_tpl->tpl_vars['foo']->value;?>
+"><?php ob_start();
+echo $_smarty_tpl->tpl_vars['foo']->value;
+$_prefixVariable20 = ob_get_clean();
+echo $_prefixVariable20;?>
+</a></li>
+                <?php }?>
+                <?php }
+}
+?>
+                <!-- <li><a href="#">&raquo;</a></li> -->
+            </ul>
+        </div>
         <?php ob_start();
 echo $_smarty_tpl->tpl_vars['name']->value;
-$_prefixVariable19 = ob_get_clean();
+$_prefixVariable21 = ob_get_clean();
 ob_start();
-echo $_prefixVariable19;
-$_prefixVariable20 = ob_get_clean();
-if ($_prefixVariable20 != "Guest") {?>
+echo $_prefixVariable21;
+$_prefixVariable22 = ob_get_clean();
+if ($_prefixVariable22 != "Guest") {?>
         <div class="jumbotron p-3 p-md-5 ">
             <div>
                 <h1 class="display-4 font-italic">input your message here</h1>
@@ -207,8 +237,7 @@ if ($_prefixVariable20 != "Guest") {?>
                     <textarea class="form-control" rows="7" id="Msg"></textarea>
                 </div>
             </div>
-            <button class="btn btn-lg btn-default btn-block subBtn" type="button" id="addMsg"
-                >送出</button>
+            <button class="btn btn-lg btn-default btn-block subBtn" type="button" id="addMsg">送出</button>
         </div>
         <?php }?>
     </div>

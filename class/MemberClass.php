@@ -81,7 +81,7 @@ class Member extends Token
                     'token' => $token,
                     'success' => true
                 ];
-                return json_encode($return);
+                return $return;
             } else {
                 mysqli_free_result($result);
                 mysqli_close($this->mysqli);

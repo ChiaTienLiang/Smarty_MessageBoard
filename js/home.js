@@ -1,5 +1,4 @@
 $(document).ready(function () {
-
     $("#addMsg").click(function () {
         if (
             $("#Msg").val() != ""
@@ -47,8 +46,8 @@ $(document).ready(function () {
     });
 
     /**
-    * 登出
-    */
+     * 登出
+     */
     $("#logout").click(function () {
         $.ajax({
             type: "POST", //傳送方式
@@ -89,8 +88,7 @@ $(document).ready(function () {
                             window.location.href = "../backend/home_index.php"
                         }
                     })
-                }
-                else {
+                } else {
                     Swal.fire({
                         // position: 'top',
                         icon: 'error',
@@ -106,8 +104,8 @@ $(document).ready(function () {
 })
 
 /**
-* 刪除留言
-*/
+ * 刪除留言
+ */
 function del(e) {
     Swal.fire({
         title: '確定刪除該留言嗎?',
@@ -118,6 +116,7 @@ function del(e) {
         confirmButtonText: '是',
         cancelButtonText: '取消',
     }).then((result) => {
+
         if (result.value == true) { //sweetalert2 彈窗選確定
             $.ajax({
                 type: "POST", //傳送方式
@@ -129,7 +128,8 @@ function del(e) {
                 },
                 success: function (res) {
                     res = JSON.parse(res);
-                    if (res === true) {
+                    // console.log(parseInt(res['Msg'][0].memberId));
+                    if (res['success'] === true) {
                         Swal.fire({
                             // position: 'top',
                             icon: 'success',
@@ -138,7 +138,69 @@ function del(e) {
                             timer: 1500
                         }).then(function () {
                             // window.location.href = "../backend/home_index.php"
-                            location.reload();
+                            // location.reload();
+                            $("#allmsg").html("");
+                            if (res['level'] === 1) {
+                                for (let i = 0; i < res['Msg'].length; i++) {
+                                    if (res['memberId'] === parseInt(res['Msg'][i].memberId)) {
+                                        $("#allmsg").append(`<div class="message">
+                                <span class="h3">${res['Msg'][i].name}</span>
+                                <span class="day h5 pull-right">${res['Msg'][i].create_at}</span>
+                                <hr>
+                                <div>
+                                    <pre id="txt${res['Msg'][i].id}">${res['Msg'][i].message}</pre>
+                                </div>
+								<div id="fix${res['Msg'][i].id}">
+                                        <span class="day h5 pull-right"></span>
+                                    </div><br>
+									<button type="button" class="btn btn-info" id="change${res['Msg'][i].id}"
+                                        onclick="change(${res['Msg'][i].id})">修改</button>
+                                    <button type="button" class="btn btn-danger" id="del${res['Msg'][i].id}"
+                                        onclick="del(${res['Msg'][i].id})">刪除</button>`);
+                                    } else {
+                                        $("#allmsg").append(`<div class="message">
+                                <span class="h3">${res['Msg'][i].name}</span>
+                                <span class="day h5 pull-right">${res['Msg'][i].create_at}</span>
+                                <hr>
+                                <div>
+                                    <pre id="txt${res['Msg'][i].id}">${res['Msg'][i].message}</pre>
+                                </div>
+								<div id="fix${res['Msg'][i].id}">
+                                        <span class="day h5 pull-right"></span>
+                                    </div><br><button type="button" class="btn btn-danger" id="del${res['Msg'][i].id}"
+                                        onclick="del(${res['Msg'][i].id})">刪除</button>`);
+                                    }
+                                }
+                            } else {
+                                for (let i = 0; i < res['Msg'].length; i++) {
+                                    if (res['memberId'] === parseInt(res['Msg'][i].memberId)) {
+                                        $("#allmsg").append(`<div class="message">
+                                <span class="h3">${res['Msg'][i].name}</span>
+                                <span class="day h5 pull-right">${res['Msg'][i].create_at}</span>
+                                <hr>
+                                <div>
+                                    <pre id="txt${res['Msg'][i].id}">${res['Msg'][i].message}</pre>
+                                </div>
+								<div id="fix${res['Msg'][i].id}">
+                                        <span class="day h5 pull-right"></span>
+                                    </div><br><button type="button" class="btn btn-info" id="change${res['Msg'][i].id}"
+                                        onclick="change(${res['Msg'][i].id})">修改</button>
+                                    <button type="button" class="btn btn-danger" id="del${res['Msg'][i].id}"
+                                        onclick="del(${res['Msg'][i].id})">刪除</button>`);
+                                    } else {
+                                        $("#allmsg").append(`<div class="message">
+                                        <span class="h3">${res['Msg'][i].name}</span>
+                                        <span class="day h5 pull-right">${res['Msg'][i].create_at}</span>
+                                        <hr>
+                                        <div>
+                                            <pre id="txt${res['Msg'][i].id}">${res['Msg'][i].message}</pre>
+                                        </div>
+                                        <div id="fix${res['Msg'][i].id}">
+                                                <span class="day h5 pull-right"></span>
+                                            </div><br>`);
+                                    }
+                                }
+                            }
                         });
                     } else {
                         Swal.fire({
@@ -157,8 +219,8 @@ function del(e) {
 }
 
 /**
-* 修改留言
-*/
+ * 修改留言
+ */
 function change(e) {
     temp = $("#txt" + e).html();
     $("#fix" + e).hide();
@@ -170,10 +232,12 @@ function change(e) {
 }
 
 /**
-* 確認修改
-*/
+ * 確認修改
+ */
 function changeOk(e) {
     test = $("#txtMsg").val();
+    let time = new Date();
+    console.log(time);
     $.ajax({
         type: "POST", //傳送方式
         url: "../MsgContro.php", //傳送目的地
@@ -198,14 +262,7 @@ function changeOk(e) {
                     $("#change" + e).show();
                     $("#del" + e).show();
                     $("#fix" + e).show();
-                    console.log(test);
                     $("#txt" + e).text(test);
-                    // $("#txt" + e).val(test);
-                    // $("#change" + e).show();
-                    // $("#del" + e).show();
-                    // $("#fix" + e).show();
-                    // window.location.href = "../backend/home_index.php"
-                    // location.reload();
                 });
             } else {
                 Swal.fire({
@@ -222,8 +279,8 @@ function changeOk(e) {
 }
 
 /**
-* 取消修改
-*/
+ * 取消修改
+ */
 function cancel(e) {
     $("#txt" + e).html("");
     $("#txt" + e).append(temp);
@@ -234,13 +291,13 @@ function cancel(e) {
 
 
 // $("#gotop").click(function () {
-    //     $("html").animate({
-    //         scrollTop: 0
-    //     }, 1000);
-    // });
-    // $("#godown").click(function () {
-    //     last = $("body").height() - $(window).height() //滾到最底
-    //     $("html").animate({
-    //         scrollTop: last
-    //     }, 1000);
-    // });
+//     $("html").animate({
+//         scrollTop: 0
+//     }, 1000);
+// });
+// $("#godown").click(function () {
+//     last = $("body").height() - $(window).height() //滾到最底
+//     $("html").animate({
+//         scrollTop: last
+//     }, 1000);
+// });

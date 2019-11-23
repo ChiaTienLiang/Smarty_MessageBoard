@@ -44,8 +44,7 @@ $smarty->assign("name", $name);
 $smarty->assign("level", $level);
 $smarty->assign("memberId", $memberId);
 
-$count = $Msg->countMsg();
-$count = ceil($count / 5);
+$count = $Msg->countPage();
 $smarty->assign("page", $count);
 
 $test = $_SERVER['REQUEST_URI'];
@@ -53,9 +52,13 @@ $test = explode("page=", $test);
 if (sizeof($test) === 2) {
     $test = $test[1];
     $page = (int) $test;
-    if ($page > $count || $page <= 0) {
+    if ($page > $count) {
         $page = $count;
-    } else $page = $page;
+    } elseif ($page <= 0) {
+        $page = 1;
+    } else {
+        $page = $page;
+    }
 } else {
     $page = 1;
 }

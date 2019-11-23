@@ -33,14 +33,15 @@ class Msg  extends Token
     }
 
     /**
-     * 取得留言總數
+     * 計算總頁數
      */
-    public function countMsg()
+    public function countPage()
     {
         $sql = "SELECT * FROM message";
         $result = mysqli_query($this->mysqli, $sql);
         // $count = mysqli_fetch_assoc($result);
         $count = mysqli_num_rows($result);
+        $count = ceil($count / 5);
         return $count;
     }
 
@@ -80,19 +81,39 @@ class Msg  extends Token
     public function delMsg($id, $token)
     {
         Token::checkToken($token);
+        $sql = "SELECT COUNT(*) FROM message WHERE id < ? ";
+        $stmt = $this->mysqli->prepare($sql);
+        $stmt->bind_param('i', $id);
+        $stmt->execute();
+        $result = $stmt->get_result()->fetch_assoc();
+        $page = ceil(($result["COUNT(*)"] + 1) / 5);
+        $allPage = $this->countPage();
+        $page = $allPage - $page + 1;
         if ($this->level === 1) {
             $sql = "DELETE FROM message WHERE id = ?";
             $stmt = $this->mysqli->prepare($sql);
             $stmt->bind_param('i', $id);
             $return = $stmt->execute();
-            mysqli_close($this->mysqli);
+            $return = $this->getMsg($page);
+            $return = [
+                'Msg' => $return,
+                'level'=>$this->level,
+                'memberId'=>$this->memberId,
+                'success' => true
+            ];
             return $return;
         } else {
             $sql = "DELETE FROM message WHERE id = ? AND memberId = ?";
             $stmt = $this->mysqli->prepare($sql);
             $stmt->bind_param('ii', $id, $this->memberId);
             $return = $stmt->execute();
-            mysqli_close($this->mysqli);
+            $return = $this->getMsg($page);
+            $return = [
+                'Msg' => $return,
+                'level'=>$this->level,
+                'memberId'=>$this->memberId,
+                'success' => true
+            ];
             return $return;
         }
     }
