@@ -128,7 +128,7 @@ function del(e) {
                 },
                 success: function (res) {
                     res = JSON.parse(res);
-                    // console.log(parseInt(res['Msg'][0].memberId));
+                    console.log(res);
                     if (res['success'] === true) {
                         Swal.fire({
                             // position: 'top',
@@ -139,11 +139,14 @@ function del(e) {
                         }).then(function () {
                             // window.location.href = "../backend/home_index.php"
                             // location.reload();
-                            $("#allmsg").html("");
-                            if (res['level'] === 1) {
-                                for (let i = 0; i < res['Msg'].length; i++) {
-                                    if (res['memberId'] === parseInt(res['Msg'][i].memberId)) {
-                                        $("#allmsg").append(`<div class="message">
+                            if (res['Msg'] === false) {
+                                $("#allmsg").html("");
+                            } else {
+                                $("#allmsg").html("");
+                                if (res['level'] === 1) {
+                                    for (let i = 0; i < res['Msg'].length; i++) {
+                                        if (res['memberId'] === parseInt(res['Msg'][i].memberId)) {
+                                            $("#allmsg").append(`<div class="message">
                                 <span class="h3">${res['Msg'][i].name}</span>
                                 <span class="day h5 pull-right">${res['Msg'][i].create_at}</span>
                                 <hr>
@@ -157,8 +160,8 @@ function del(e) {
                                         onclick="change(${res['Msg'][i].id})">修改</button>
                                     <button type="button" class="btn btn-danger" id="del${res['Msg'][i].id}"
                                         onclick="del(${res['Msg'][i].id})">刪除</button>`);
-                                    } else {
-                                        $("#allmsg").append(`<div class="message">
+                                        } else {
+                                            $("#allmsg").append(`<div class="message">
                                 <span class="h3">${res['Msg'][i].name}</span>
                                 <span class="day h5 pull-right">${res['Msg'][i].create_at}</span>
                                 <hr>
@@ -169,12 +172,12 @@ function del(e) {
                                         <span class="day h5 pull-right"></span>
                                     </div><br><button type="button" class="btn btn-danger" id="del${res['Msg'][i].id}"
                                         onclick="del(${res['Msg'][i].id})">刪除</button>`);
+                                        }
                                     }
-                                }
-                            } else {
-                                for (let i = 0; i < res['Msg'].length; i++) {
-                                    if (res['memberId'] === parseInt(res['Msg'][i].memberId)) {
-                                        $("#allmsg").append(`<div class="message">
+                                } else {
+                                    for (let i = 0; i < res['Msg'].length; i++) {
+                                        if (res['memberId'] === parseInt(res['Msg'][i].memberId)) {
+                                            $("#allmsg").append(`<div class="message">
                                 <span class="h3">${res['Msg'][i].name}</span>
                                 <span class="day h5 pull-right">${res['Msg'][i].create_at}</span>
                                 <hr>
@@ -187,8 +190,8 @@ function del(e) {
                                         onclick="change(${res['Msg'][i].id})">修改</button>
                                     <button type="button" class="btn btn-danger" id="del${res['Msg'][i].id}"
                                         onclick="del(${res['Msg'][i].id})">刪除</button>`);
-                                    } else {
-                                        $("#allmsg").append(`<div class="message">
+                                        } else {
+                                            $("#allmsg").append(`<div class="message">
                                         <span class="h3">${res['Msg'][i].name}</span>
                                         <span class="day h5 pull-right">${res['Msg'][i].create_at}</span>
                                         <hr>
@@ -198,9 +201,12 @@ function del(e) {
                                         <div id="fix${res['Msg'][i].id}">
                                                 <span class="day h5 pull-right"></span>
                                             </div><br>`);
+                                        }
                                     }
+
                                 }
                             }
+
                         });
                     } else {
                         Swal.fire({
@@ -236,8 +242,8 @@ function change(e) {
  */
 function changeOk(e) {
     test = $("#txtMsg").val();
-    let time = new Date();
-    console.log(time);
+    // let time = new Date();
+    console.log(e);
     $.ajax({
         type: "POST", //傳送方式
         url: "../MsgContro.php", //傳送目的地

@@ -49,7 +49,7 @@
         </div>
         <div class="jumbotron" id="allmsg">
             {foreach $res as $value}
-            <div class="message">
+            <div class="message" id="message{{$value.id}}">
                 <span class="h3">{{$value.name}}</span>
                 <span class="day h5 pull-right">{{$value.create_at}}</span>
                 <hr>
@@ -90,9 +90,9 @@
                 <!-- <li><a href="#">&laquo;</a></li> -->
                 {for $foo=1 to $page}
                 {if $pagecss == $foo}
-                <li><a class="active" href="?page={$foo}">{{$foo}}</a></li>
+                <li><a class="active" href="?page={{$foo}}">{{$foo}}</a></li>
                 {else}
-                <li><a class="disabled" href="?page={$foo}">{{$foo}}</a></li>
+                <li><a class="disabled" href="?page={{$foo}}">{{$foo}}</a></li>
                 {/if}
                 {/for}
                 <!-- <li><a href="#">&raquo;</a></li> -->

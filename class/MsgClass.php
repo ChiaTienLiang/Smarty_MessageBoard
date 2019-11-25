@@ -24,12 +24,18 @@ class Msg  extends Token
             FROM message,member WHERE member.id=message.memberId ORDER BY create_at  DESC limit $page,$max ";
         $result = mysqli_query($this->mysqli, $sql);
         $num = mysqli_num_rows($result); //取得數量
-        for ($i = 0; $i < $num; $i++) {
-            $search[$i] = mysqli_fetch_assoc($result);
+        if ($num === 0) {
+            mysqli_free_result($result);
+            mysqli_close($this->mysqli);
+            return false;
+        } else {
+            for ($i = 0; $i < $num; $i++) {
+                $search[$i] = mysqli_fetch_assoc($result);
+            }
+            mysqli_free_result($result);
+            mysqli_close($this->mysqli);
+            return $search;
         }
-        mysqli_free_result($result);
-        mysqli_close($this->mysqli);
-        return $search;
     }
 
     /**
@@ -97,8 +103,8 @@ class Msg  extends Token
             $return = $this->getMsg($page);
             $return = [
                 'Msg' => $return,
-                'level'=>$this->level,
-                'memberId'=>$this->memberId,
+                'level' => $this->level,
+                'memberId' => $this->memberId,
                 'success' => true
             ];
             return $return;
@@ -110,8 +116,8 @@ class Msg  extends Token
             $return = $this->getMsg($page);
             $return = [
                 'Msg' => $return,
-                'level'=>$this->level,
-                'memberId'=>$this->memberId,
+                'level' => $this->level,
+                'memberId' => $this->memberId,
                 'success' => true
             ];
             return $return;

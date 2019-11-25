@@ -18,19 +18,6 @@ $smarty->debugging = true;
 // $smarty->caching = true;
 // $smarty->cache_lifetime = 120;
 
-/*
- **使用者資訊(確認是否登入)
-//  */
-// if (!$_GET['key']) {
-//     $name = 'Guest';
-//     $memberId = NULL;
-//     $level = NULL;
-// } else {
-//     $search = $Msg->checkToken($_POST['key']);
-//     $name = $search->name;
-//     $memberId = $search->id;
-//     $level = $search->level;
-// }
 
 if (isset($_SESSION['level'])) $level = $_SESSION['level'];
 else $level = NULL;
